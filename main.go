@@ -66,6 +66,7 @@ func main() {
 		case <-time.After(timeout):
 			log.Fatal("timed out")
 		case s := <-infoCh:
+			allRunning(s) // print log if some tasks are not running
 			ctx, cancelFunc := context.WithTimeout(context.Background(), timeout)
 			req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewBufferString(s))
 			if err != nil {
