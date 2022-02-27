@@ -26,3 +26,36 @@ func Test_allRunning(t *testing.T) {
 		})
 	}
 }
+
+func Test_injectValue(t *testing.T) {
+	type args struct {
+		s string
+		k string
+		v string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{"RUNNING", args{
+			`[{"id": "00", "state": "RUNNING", "error": "NO_ERROR", "project": 17236, "run": 107, "clone": 87, "gen": 7, "core": "0xa7", "unit": "0x0000001680fccb02609dcd08cc773dfd", "percentdone": "24.14%", "eta": "2 hours 49 mins", "ppd": "24104", "creditestimate": "3738", "waitingon": "", "nextattempt": "0.00 secs", "timeremaining": "2.96 days", "totalframes": 100, "framesdone": 24, "assigned": "2021-05-24T14:39:19Z", "timeout": "2021-05-25T14:39:19Z", "deadline": "2021-05-27T14:39:19Z", "ws": "128.252.203.2", "cs": "0.0.0.0", "attempts": 0, "slot": "00", "tpf": "2 mins 14 secs", "basecredit": "990"}]`,
+			"hostname", "taro"},
+			`[{"assigned":"2021-05-24T14:39:19Z","attempts":0,"basecredit":"990","clone":87,"core":"0xa7","creditestimate":"3738","cs":"0.0.0.0","deadline":"2021-05-27T14:39:19Z","error":"NO_ERROR","eta":"2 hours 49 mins","framesdone":24,"gen":7,"hostname":"taro","id":"00","nextattempt":"0.00 secs","percentdone":"24.14%","ppd":"24104","project":17236,"run":107,"slot":"00","state":"RUNNING","timeout":"2021-05-25T14:39:19Z","timeremaining":"2.96 days","totalframes":100,"tpf":"2 mins 14 secs","unit":"0x0000001680fccb02609dcd08cc773dfd","waitingon":"","ws":"128.252.203.2"}]`},
+		{"RUNNINGx2", args{
+			`[{"id": "00", "state": "RUNNING", "error": "NO_ERROR", "project": 17236, "run": 107, "clone": 87, "gen": 7, "core": "0xa7", "unit": "0x0000001680fccb02609dcd08cc773dfd", "percentdone": "24.14%", "eta": "2 hours 49 mins", "ppd": "24104", "creditestimate": "3738", "waitingon": "", "nextattempt": "0.00 secs", "timeremaining": "2.96 days", "totalframes": 100, "framesdone": 24, "assigned": "2021-05-24T14:39:19Z", "timeout": "2021-05-25T14:39:19Z", "deadline": "2021-05-27T14:39:19Z", "ws": "128.252.203.2", "cs": "0.0.0.0", "attempts": 0, "slot": "00", "tpf": "2 mins 14 secs", "basecredit": "990"}, {"id": "00", "state": "RUNNING", "error": "NO_ERROR", "project": 17236, "run": 107, "clone": 87, "gen": 7, "core": "0xa7", "unit": "0x0000001680fccb02609dcd08cc773dfd", "percentdone": "24.14%", "eta": "2 hours 49 mins", "ppd": "24104", "creditestimate": "3738", "waitingon": "", "nextattempt": "0.00 secs", "timeremaining": "2.96 days", "totalframes": 100, "framesdone": 24, "assigned": "2021-05-24T14:39:19Z", "timeout": "2021-05-25T14:39:19Z", "deadline": "2021-05-27T14:39:19Z", "ws": "128.252.203.2", "cs": "0.0.0.0", "attempts": 0, "slot": "00", "tpf": "2 mins 14 secs", "basecredit": "990"}]`,
+			"hostname", "jiro"},
+			`[{"assigned":"2021-05-24T14:39:19Z","attempts":0,"basecredit":"990","clone":87,"core":"0xa7","creditestimate":"3738","cs":"0.0.0.0","deadline":"2021-05-27T14:39:19Z","error":"NO_ERROR","eta":"2 hours 49 mins","framesdone":24,"gen":7,"hostname":"jiro","id":"00","nextattempt":"0.00 secs","percentdone":"24.14%","ppd":"24104","project":17236,"run":107,"slot":"00","state":"RUNNING","timeout":"2021-05-25T14:39:19Z","timeremaining":"2.96 days","totalframes":100,"tpf":"2 mins 14 secs","unit":"0x0000001680fccb02609dcd08cc773dfd","waitingon":"","ws":"128.252.203.2"},{"assigned":"2021-05-24T14:39:19Z","attempts":0,"basecredit":"990","clone":87,"core":"0xa7","creditestimate":"3738","cs":"0.0.0.0","deadline":"2021-05-27T14:39:19Z","error":"NO_ERROR","eta":"2 hours 49 mins","framesdone":24,"gen":7,"hostname":"jiro","id":"00","nextattempt":"0.00 secs","percentdone":"24.14%","ppd":"24104","project":17236,"run":107,"slot":"00","state":"RUNNING","timeout":"2021-05-25T14:39:19Z","timeremaining":"2.96 days","totalframes":100,"tpf":"2 mins 14 secs","unit":"0x0000001680fccb02609dcd08cc773dfd","waitingon":"","ws":"128.252.203.2"}]`},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := injectValue(tt.args.s, tt.args.k, tt.args.v)
+			if err != nil {
+				t.Errorf("err=%v", err)
+			}
+			if got != tt.want {
+				t.Errorf("got %v but want %v", got, tt.want)
+			}
+		})
+	}
+}

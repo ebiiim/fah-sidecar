@@ -17,7 +17,7 @@ import (
 
 func main() {
 	flag.Usage = func() {
-		fmt.Fprintf(os.Stderr, "Usage: %s [-host] [-port] [-interval] [-livenessport] [-insecure] COLLECTOR_ENDPOINT_URL\n", os.Args[0])
+		fmt.Fprintf(os.Stderr, "Usage: %s [-host] [-port] [-interval] [-livenessport] [-insecure] [-nodename] COLLECTOR_ENDPOINT_URL\n", os.Args[0])
 		flag.PrintDefaults()
 	}
 
@@ -31,6 +31,8 @@ func main() {
 	flag.DurationVar(&interval, "interval", 5*time.Second, "Send status once per $interval sec (e.g., \"5.0s\")")
 	var livenessPort string
 	flag.StringVar(&livenessPort, "livenessport", "80", "Liveness Probe Port \"/healthz\"")
+	var nodename string
+	flag.StringVar(&nodename, "nodename", "", "Kubernetes Node Name or any other identifier (e.g., \"node123\")")
 
 	flag.Parse()
 	if len(flag.Args()) == 0 {
@@ -66,7 +68,28 @@ func main() {
 		case <-time.After(timeout):
 			log.Fatal("timed out")
 		case s := <-infoCh:
-			allRunning(s) // print log if some tasks are not running
+			allRunning(s) // print log if any task is not running
+
+			// inject data
+			// - sc_nodename: Kubernetes node name (passed via arg)
+			// - sc_hostname: Pod name (os.Hostname())
+			hostname, err := os.Hostname()
+			if err != nil {
+				log.Printf("os.Hostname: %v", err)
+				continue
+			}
+			s, err = injectValue(s, "sc_nodename", nodename)
+			if err != nil {
+				log.Printf("inject sc_nodename: %v", err)
+				continue
+			}
+			s, err = injectValue(s, "sc_hostname", hostname)
+			if err != nil {
+				log.Printf("inject sc_hostname: %v", err)
+				continue
+			}
+
+			// POST
 			ctx, cancelFunc := context.WithTimeout(context.Background(), timeout)
 			req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewBufferString(s))
 			if err != nil {
