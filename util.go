@@ -9,7 +9,7 @@ import (
 func injectValue(j string, key string, val string) (string, error) {
 	l := []map[string]interface{}{}
 	if err := json.NewDecoder(bytes.NewBufferString(j)).Decode(&l); err != nil {
-		log.Printf("injectValue: err=%v s=%s", err, j)
+		log.Printf("injectValue: err=%v j=%s", err, j)
 		return "", err
 	}
 	for _, v := range l {
