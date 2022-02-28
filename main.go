@@ -28,7 +28,7 @@ func main() {
 	var insecure bool
 	flag.BoolVar(&insecure, "insecure", false, "Skip verifying collector's TLS cert")
 	var interval time.Duration
-	flag.DurationVar(&interval, "interval", 5*time.Second, "Send status once per $interval sec (e.g., \"5.0s\")")
+	flag.DurationVar(&interval, "interval", 5*time.Second, "Send status once per $interval sec")
 	var livenessPort string
 	flag.StringVar(&livenessPort, "livenessport", "80", "Liveness Probe Port \"/healthz\"")
 	var nodename string
