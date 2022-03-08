@@ -1,6 +1,6 @@
 # fah-sidecar
 
-Sidecar app that works with [fah-collector](https://github.com/ebiiim/fah-sidecar) by exporting FAH data.
+Sidecar app that works with [fah-collector](https://github.com/ebiiim/fah-collector) by exporting FAH data.
 
 ## Usage
 
