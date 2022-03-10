@@ -41,7 +41,13 @@ func main() {
 	}
 
 	url := flag.Arg(0)
+
+	// forces timeout >= 5s as the loop might take long
+	// too short timeout causes crash
 	timeout := 3 * interval
+	if timeout.Seconds() < 5.0 {
+		timeout = 5 * time.Second
+	}
 
 	// Liveness Probe
 	r := chi.NewRouter()
